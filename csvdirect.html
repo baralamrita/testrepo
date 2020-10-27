@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="./firstapp.css">  -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/table-to-json@1.0.0/lib/jquery.tabletojson.min.js"
+        integrity="sha256-H8xrCe0tZFi/C2CgxkmiGksqVaxhW0PFcUKZJZo1yNU=" crossorigin="anonymous"></script>
+    <!-- <script src="upload.js"></script> -->
+</head>
+
+<body>
+    <div class="jumbotron text-center">
+        <h1>Address Book</h1>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-auto">
+            <table class="table table-bordered" id="mydata" data-id-field="Bestellnummer" data-sort-name="SearchVolume"
+                data-sort-order="desc" >
+                <thead>
+                    <tr>
+                        <th data-field="Name1" data-sortable="true">Name1</th>
+                        <th data-field="Name2" data-sortable="true">Name2</th>
+                        <th data-field="Street" data-sortable="true">Street</th>
+                        <th data-field="Zip" data-sortable="true">Zip</th>
+                        <th data-field="City" data-sortable="true">City</th>
+                        <th data-field="Country" data-sortable="true">Country</th>
+
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div class="container m-5 ">
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <button type="button" class="btn btn-primary" id="btn1" onclick="upload()">Upload</button>
+
+            </div>
+        </div>
+    </div>
+    <div>
+        <label for="address">Choose file to upload</label>
+        <input type="file" id="filename" name="filename">
+
+    </div>
+    <div class="jumbotron text-center">
+        <div class="row">
+            <p>Copyright 2020 A. Baral</p>
+        </div>
+    </div>
+</body>
+
+<script>
+    $(document).ready(function () {
+        // selectFile();
+        csvJSON();
+        upload();
+    });
+                
+        function csvJSON(){
+        $("#filename").change(function(e) {
+        var r = new FileReader();
+        r.onload = function (e) {
+        var csv = e.target.result;
+        // console.log(csv);
+        var lines = csv.split("\r\n");
+        var result = [];
+        var headers = lines[0].split(",");
+    //   alert(headers);
+    //   alert(headers.length);
+        if(headers.length==6){
+        for (var i = 1; i < lines.length; i++) {
+        var obj = {};
+        var currentline = lines[i].split(",");
+        for (var j = 0; j < headers.length; j++) {
+        obj[headers[j]] = currentline[j];
+         
+        }
+        result.push(obj);     
+        }
+      $('#mydata').bootstrapTable({
+                data: result,
+               
+      });
+        //    console.log(result);
+        //    csvStringify(result);
+           const resultObj = Object.assign({}, result);
+           console.log(JSON.stringify(resultObj));
+           return resultObj;   
+    //    var fair = JSON.stringify(result); 
+    // //    console.log(fair);
+    //   alert(fair);
+      
+    }
+    else{
+    alert("Wrong File\Can't be uploaded");
+    }
+    
+    }
+     r.readAsText(e.target.files.item(0));
+     
+     })
+             
+    }
+            
+ function csvStringify(result1)
+ {
+    var fair = JSON.stringify(result1); 
+     alert(fair);     
+    //  return fair;
+    //  var url = 'http://localhost:3000/upload';
+    //  $.post(url, fair, function (data) {
+    //    console.log("request to /orders done");
+    //  debugger;
+    //  });
+ }           
+       
+function upload()
+{ 
+    debugger;
+    // var csv1 = csvJSON();
+    //console.log(csv1);
+    var url = 'http://localhost:3000/upload';
+    var tData = csvJSON(); 
+    console.log(JSON.stringify(tData));
+    //debugger;
+    // $.post(url, JSON.stringify(tData), function (data) {
+    //   console.log("request to /orders done");
+     
+    // });
+    
+}
+
+
+
+</script>
+
+</html>
